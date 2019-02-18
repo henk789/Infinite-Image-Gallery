@@ -24,6 +24,8 @@ function Carousel(element)
     var lastEvent = undefined;
     var pinching = false;
     var draggingInPicture = false;
+    var velocityFriction = 0.06;
+    var velocityFactor = 16;
 
     var originalSize = {
         width: 1920,
@@ -130,10 +132,19 @@ function Carousel(element)
         current.height = originalSize.height * current.z;
         current.width = originalSize.width * current.z;
         var currPane = document.querySelector("#ul").children[current_pane].children[0];
+
         var value = "translate3d(" + current.x + "px, " + current.y + "px, 0) scale(" + Math.min(Math.max(current.z, 0.5), 6) + ")";
         currPane.style.webkitTransform = value;
         currPane.style.mozTransform = value;
         currPane.style.transform = value;
+    }
+
+    function keepViewInBounds() {
+        var viewCoordinates = getCoordinateShiftDueToScale(originalSize, current.z);
+
+        current.x = Math.min(Math.max(current.x, -viewCoordinates.x), viewCoordinates.x);
+        current.y = Math.min(Math.max(current.y, -viewCoordinates.y), viewCoordinates.y);
+        console.log(viewCoordinates);
     }
 
     // Enable Infinite Scrolling
@@ -156,7 +167,7 @@ function Carousel(element)
             elementPinch.style.transition = "0.35s";
             setTimeout(function() {
                 elementPinch.style.transition = "none";
-            }, 300)
+            }, 350)
 
             current.x = 0;
             current.y = 0;
@@ -173,15 +184,24 @@ function Carousel(element)
     }
 
     function moveWithVelocity() {
-        current.x = last.x + current.velocityX;
-        current.y = last.y + current.velocityY;
+        var velocity = Math.sqrt(Math.pow(current.velocityX, 2) + Math.pow(current.velocityY, 2));
+        current.x = last.x + current.velocityX * velocityFactor;
+        current.y = last.y + current.velocityY * velocityFactor;
+
+        if (current.z > 1) {
+            keepViewInBounds();
+        }
+
         update();
-        current.velocityX *= 0.92
-        current.velocityY *= 0.92
         last.x = current.x;
         last.y = current.y;
-        if (Math.sqrt(Math.pow(current.velocityX, 2) + Math.pow(current.velocityY, 2)) < 0.01) {
-            clearInterval();
+        
+        if (velocity > 0.05) {
+            current.velocityX = current.velocityX - velocityFriction * (current.velocityX / velocity);
+            current.velocityY = current.velocityY - velocityFriction * (current.velocityY / velocity);
+            window.requestAnimationFrame(function(){
+                moveWithVelocity();
+            });
         }
     }
 
@@ -276,6 +296,11 @@ function Carousel(element)
     
             current.x = last.x + ev.deltaX - fixHammerjsDeltaIssue.x;
             current.y = last.y + ev.deltaY - fixHammerjsDeltaIssue.y;
+
+            if (current.z > 1) {
+                keepViewInBounds();
+            }
+
             lastEvent = 'pan';
             update();
         }
@@ -295,13 +320,10 @@ function Carousel(element)
             draggingInPicture = false;
             last.x = current.x;
             last.y = current.y;
-            
             // Init Momentum
             current.velocityX = ev.velocityX;
             current.velocityY = ev.velocityY;
-            /*window.setInterval(function(){
-                moveWithVelocity();
-            }, 1000/60);*/
+            moveWithVelocity();
             lastEvent = 'panend';
         }
 
@@ -374,7 +396,7 @@ function Carousel(element)
             elementPinch.style.transition = "0.35s";
             setTimeout(function() {
                 elementPinch.style.transition = "none";
-            }, 300)
+            }, 350)
 
             var zoomOrigin = getRelativePosition(elementPinch, { x: ev.center.x, y: ev.center.y }, originalSize, current.z);
             var d = scaleFrom(zoomOrigin, current.z, 3)
@@ -427,7 +449,7 @@ function Carousel(element)
             elementPinch.style.transition = "0.35s";
             setTimeout(function() {
                 elementPinch.style.transition = "none";
-            }, 300)
+            }, 350)
 
             var zoomOrigin = getRelativePosition(elementPinch, { x: ev.center.x, y: ev.center.y }, originalSize, current.z);
             var d = scaleFrom(zoomOrigin, current.z, current.z + scaleFactor)
@@ -445,7 +467,7 @@ function Carousel(element)
             elementPinch.style.transition = "0.35s";
             setTimeout(function() {
                 elementPinch.style.transition = "none";
-            }, 300)
+            }, 350)
 
             current.x = 0;
             current.y = 0;
@@ -460,8 +482,12 @@ function Carousel(element)
     }
 
     function onHammerInput(ev) {
+        console.log(ev);
         if (ev.type == "hammer.input" && current.z < 1 && ev.isFinal) {
             handlePinchEnd(ev);
+        } else if (ev.type == "hammer.input" && (current.velocityX != 0 || current.velocityX != 0)) {
+            current.velocityX = 0;
+            current.velocityY = 0;
         }
     }
 

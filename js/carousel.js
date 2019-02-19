@@ -205,6 +205,20 @@ function Carousel(element)
         }
     }
 
+    function imageOutOfBounds() {
+        var viewCoordinates = getCoordinateShiftDueToScale(originalSize, current.z);
+
+        if (current.x > viewCoordinates.x
+            || current.x < -viewCoordinates.x
+            || current.y > viewCoordinates.y
+            || current.y < -viewCoordinates.y) {
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * initial
      */
@@ -323,6 +337,12 @@ function Carousel(element)
             // Init Momentum
             current.velocityX = ev.velocityX;
             current.velocityY = ev.velocityY;
+            if (imageOutOfBounds()) {
+                elementPinch.style.transition = "0.35s";
+                setTimeout(function() {
+                    elementPinch.style.transition = "none";
+                }, 350)
+            }
             moveWithVelocity();
             lastEvent = 'panend';
         }

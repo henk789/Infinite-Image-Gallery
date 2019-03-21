@@ -1,16 +1,55 @@
 <html>
   <body>
-    <div id="hammer">
+    <div id="hammer" style="position: relative;">
       <div id="carousel">
           <ul id="ul">
-                  <li><div id="pinch"><img src="images/quino-al-387923-unsplash.jpeg" style="width: 100%;" draggable="false"></div></li>
-              <li><div id="pinch"><img src="images/anton-repponen-101539-unsplash.jpeg" style="width: 100%;" draggable="false"></div></li>
-              <li><div id="pinch"><img src="images/4ktest.jpg" style="width: 100%;" draggable="false"></div></li>
-              <li><div id="pinch"><img src="images/nasa-53888-unsplash.jpeg" style="width: 100%;" draggable="false"></div></li>
-              <li><div id="pinch"><img src="images/quino-al-387923-unsplash.jpeg" style="width: 100%;" draggable="false"></div></li>
-                  <li><div id="pinch"><img src="images/anton-repponen-101539-unsplash.jpeg" style="width: 100%;" draggable="false"></div></li>
+            <script>
+
+              /////////////////////////////////////////////////////////
+              //////////    BILDER HIER UNTEN EINFÜGEN
+              //////////               |
+              //////////               v
+              //////////    Beispiel:
+              //////////    images = [
+              //////////      "images/Bildname.jpg"
+              //////////    ]
+              /////////////////////////////////////////////////////////
+
+              var images = [
+                "images/anton-repponen-101539-unsplash.jpeg",
+                "images/4ktest.jpg",
+                "images/nasa-53888-unsplash.jpeg",
+                "images/quino-al-387923-unsplash.jpeg"
+              ];
+
+              // Generate Image Panes
+              var appendNode = document.querySelector("#ul");
+
+              // Append last image to ensure seamless transitions
+              var li = document.createElement('li');
+              li.innerHTML = '<div id="pinch"><img src="' + images[images.length - 1] + '" style="width: 100%;" draggable="false"></div>';
+              appendNode.appendChild(li);
+
+              for (i = 0; i < images.length; i++) {
+                var li = document.createElement('li');
+                li.innerHTML = '<div id="pinch"><img src="' + images[i] + '" style="width: 100%;" draggable="false"></div>';
+                appendNode.appendChild(li);
+              }
+
+              // Append first image to ensure seamless transitions
+              var li = document.createElement('li');
+              li.innerHTML = '<div id="pinch"><img src="' + images[0] + '" style="width: 100%;" draggable="false"></div>';
+              appendNode.appendChild(li);
+
+            </script>
           </ul>
       </div>
+    </div>
+    <div id="button-left" style="position: absolute; top: 50%; left: 50px; z-index: 3;">
+      <img src="images/arrow-left.png" style="height: 150px; width: 150px; margin-top: -50%;" onclick="carousel.prev()">
+    </div>
+    <div id="button-right" style="position: absolute; top: 50%; right: 50px; z-index: 3;">
+      <img src="images/arrow-right.png" style="height: 150px; width: 150px; margin-top: -50%;" onclick="carousel.next()">
     </div>
     <link rel="stylesheet" href="css/carousel.css">
     <script src="js/hammer.min.js"></script>

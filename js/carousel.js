@@ -18,7 +18,6 @@ function Carousel(element)
     var current_pane = 1;
 
     // Pinch
-
     var fixHammerjsDeltaIssue = undefined;
     var pinchStart = { x: undefined, y: undefined }
     var lastEvent = undefined;
@@ -275,10 +274,35 @@ function Carousel(element)
             container.addClass("animate");
         }
         container.css("transform", "translate3d("+ percent +"%,0,0) scale3d(1,1,1)");
+        console.log("Offset applied");
     }
 
-    this.next = function() { return this.showPane(current_pane+1, true); };
-    this.prev = function() { return this.showPane(current_pane-1, true); };
+    this.next = function() {
+        if (current_pane == 1) {
+            container.removeClass("animate");
+            container.css("transform", "translate3d("+ -((100/pane_count)*current_pane) +"%,0,0) scale3d(1,1,1)");
+            console.log("Offset fix");
+            console.log(-((100/pane_count)*current_pane));
+        }
+        // Delay animation by one frame so the offset can be set correctly the frame before
+        setTimeout(function(){
+            console.log("animate");
+            self.showPane(current_pane + 1, true);
+        }, 1000/60);
+    };
+    this.prev = function() {
+        if (current_pane == pane_count - 2) {
+            container.removeClass("animate");
+            container.css("transform", "translate3d("+ -((100/pane_count)*current_pane) +"%,0,0) scale3d(1,1,1)");
+            console.log("Offset fix");
+            console.log(-((100/pane_count)*current_pane));
+        }
+        // Delay animation by one frame so the offset can be set correctly the frame before
+        setTimeout(function(){
+            console.log("animate");
+            self.showPane(current_pane - 1, true);
+        }, 1000/60);
+    };
 
     function onPan(ev) {
         console.log("onPan");
@@ -435,7 +459,7 @@ function Carousel(element)
     function onSwipeLeft(ev) {
         console.log("onSwipeLeft");
         if (!pinching && current.z == 1) {
-            self.next();
+            next();
         } else {
             console.log("onSwipeLeftCancelled");
         }
@@ -443,7 +467,7 @@ function Carousel(element)
     function onSwipeRight(ev) {
         console.log("onSwipeRight");
         if (!pinching && current.z == 1) {
-            self.prev();
+            prev();
         } else {
             console.log("onSwipeRightCancelled");
         }

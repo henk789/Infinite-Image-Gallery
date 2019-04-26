@@ -131,9 +131,7 @@ function Carousel(element)
         current.height = originalSize.height * current.z;
         current.width = originalSize.width * current.z;
         var currPane = document.querySelector("#ul").children[current_pane].children[0];
-
-        var value = "translate3d(" + current.x + "px, " + current.y + "px, 0) scale(" + Math.min(Math.max(current.z, 0.5), 6) + ")";
-        console.log(value);
+        var value = "translate3d(" + (current.x) + "px, " + current.y + "px, 0) scale(" + Math.min(Math.max(current.z, 0.5), 6) + ")";
         currPane.style.webkitTransform = value;
         currPane.style.mozTransform = value;
         currPane.style.transform = value;

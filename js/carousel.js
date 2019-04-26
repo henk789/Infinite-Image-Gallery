@@ -14,6 +14,7 @@ function Carousel(element)
 
     var pane_width = 0;
     var pane_count = panes.length;
+    realIndex = 1;
 
     var current_pane = 1;
 
@@ -247,21 +248,27 @@ function Carousel(element)
      * show pane by index
      * @param   {Number}    index
      */
-    this.showPane = function(index, animate) {
+    this.showPane = function(index, newOffset, animate) {
 
         // between the bounds
-        var newIndex = Math.max(1, Math.min(index, pane_count-2));
+        var newIndex = Math.max(1, Math.min(index + newOffset, pane_count-2));
+        realIndex += newOffset;
+        if (realIndex < 0) {
+            realIndex = pane_count - 3;
+        } else if (realIndex > pane_count - 1) {
+            realIndex = 2;
+        }
         current_pane = newIndex;
         current.z = 1;
 
         // If out of bounds
-        if (newIndex - index == 1) {
+        if (newIndex - (index + newOffset) == 1) {
             current_pane = pane_count - 2;
-        } else if (newIndex - index == -1) {
+        } else if (newIndex - (index + newOffset) == -1) {
             current_pane = 1;
         }
 
-        var offset = -((100/pane_count)*index);
+        var offset = -((100/pane_count) * (realIndex));
         setContainerOffset(offset, animate);
     };
 
@@ -277,29 +284,41 @@ function Carousel(element)
     }
 
     this.next = function() {
-        if (current_pane == 1) {
+        if (current_pane == 1 && realIndex != 1) {
             container.removeClass("animate");
             container.css("transform", "translate3d("+ -((100/pane_count)*current_pane) +"%,0,0) scale3d(1,1,1)");
             console.log("Offset fix");
             console.log(-((100/pane_count)*current_pane));
         }
+
+        if (current.z != 1) {
+            resetElement();
+            update()
+        }
+
         // Delay animation by one frame so the offset can be set correctly the frame before
         setTimeout(function(){
             //console.log("animate");
-            self.showPane(current_pane + 1, true);
+            self.showPane(current_pane, 1, true);
         }, 1000/60);
     };
     this.prev = function() {
-        if (current_pane == pane_count - 2) {
+        if (current_pane == pane_count - 2 && realIndex != pane_count - 2) {
             container.removeClass("animate");
             container.css("transform", "translate3d("+ -((100/pane_count)*current_pane) +"%,0,0) scale3d(1,1,1)");
             console.log("Offset fix");
             console.log(-((100/pane_count)*current_pane));
         }
+
+        if (current.z != 1) {
+            resetElement();
+            update()
+        }
+
         // Delay animation by one frame so the offset can be set correctly the frame before
         setTimeout(function(){
             //console.log("animate");
-            self.showPane(current_pane - 1, true);
+            self.showPane(current_pane, -1, true);
         }, 1000/60);
     };
 
@@ -318,6 +337,7 @@ function Carousel(element)
             }
 
             setContainerOffset(drag_offset + pane_offset);
+            realIndex = current_pane;
         } else if (current.z != 1 && !draggingInPicture) {
             draggingInPicture = true;
             console.log("Enabled draggingInPicture");
@@ -347,9 +367,9 @@ function Carousel(element)
 
         if (current.z == 1) {
             if (Math.abs(ev.deltaX) < 5) {
-                self.showPane(current_pane, false);
+                self.showPane(current_pane, 0, false);
             } else {
-                self.showPane(current_pane, true);
+                self.showPane(current_pane, 0, true);
             }
             resetElement();
         } else if (draggingInPicture) {

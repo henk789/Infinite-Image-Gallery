@@ -133,6 +133,7 @@ function Carousel(element)
         var currPane = document.querySelector("#ul").children[current_pane].children[0];
 
         var value = "translate3d(" + current.x + "px, " + current.y + "px, 0) scale(" + Math.min(Math.max(current.z, 0.5), 6) + ")";
+        console.log(value);
         currPane.style.webkitTransform = value;
         currPane.style.mozTransform = value;
         currPane.style.transform = value;
@@ -274,7 +275,7 @@ function Carousel(element)
             container.addClass("animate");
         }
         container.css("transform", "translate3d("+ percent +"%,0,0) scale3d(1,1,1)");
-        console.log("Offset applied");
+        //console.log("Offset applied");
     }
 
     this.next = function() {
@@ -286,7 +287,7 @@ function Carousel(element)
         }
         // Delay animation by one frame so the offset can be set correctly the frame before
         setTimeout(function(){
-            console.log("animate");
+            //console.log("animate");
             self.showPane(current_pane + 1, true);
         }, 1000/60);
     };
@@ -299,7 +300,7 @@ function Carousel(element)
         }
         // Delay animation by one frame so the offset can be set correctly the frame before
         setTimeout(function(){
-            console.log("animate");
+            //console.log("animate");
             self.showPane(current_pane - 1, true);
         }, 1000/60);
     };
@@ -459,7 +460,7 @@ function Carousel(element)
     function onSwipeLeft(ev) {
         console.log("onSwipeLeft");
         if (!pinching && current.z == 1) {
-            next();
+            self.next();
         } else {
             console.log("onSwipeLeftCancelled");
         }
@@ -467,7 +468,7 @@ function Carousel(element)
     function onSwipeRight(ev) {
         console.log("onSwipeRight");
         if (!pinching && current.z == 1) {
-            prev();
+            self.prev();
         } else {
             console.log("onSwipeRightCancelled");
         }
@@ -488,6 +489,7 @@ function Carousel(element)
     }
     function onDoubleTap(ev) {
         console.log("onDoubleTap");
+        console.log(current.z);
         if (current.z == 1) {
             var scaleFactor = 2;
             elementPinch.style.transition = "0.35s";
@@ -526,7 +528,7 @@ function Carousel(element)
     }
 
     function onHammerInput(ev) {
-        console.log(ev);
+        //console.log(ev);
         if (ev.type == "hammer.input" && current.z < 1 && ev.isFinal) {
             handlePinchEnd(ev);
         } else if (ev.type == "hammer.input" && (current.velocityX != 0 || current.velocityX != 0)) {

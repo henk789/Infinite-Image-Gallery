@@ -21,6 +21,13 @@
             z-index: 1337;
         }
 
+        #overlay {
+            height: 200px;
+            opacity: 30%;
+            width: 100%;
+            color: #000;
+        }
+
         #carousel {
             background: white;
             overflow: hidden;

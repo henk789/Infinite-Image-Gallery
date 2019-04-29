@@ -10,10 +10,16 @@
               //////////               |
               //////////               v
               //////////    Beispiel:
-              //////////    images = [
+              //////////    var images = [
               //////////      "images/Bildname.jpg",
               //////////      "images/Bildname2.jpg"
               //////////    ]
+              //////////
+              //////////    const imageTexts = [
+              //////////      "Text zu Bild1",
+              //////////      "Text zu Bild2"
+              //////////    ]
+              //////////
               /////////////////////////////////////////////////////////
 
               var images = [
@@ -22,6 +28,13 @@
                 "images/nasa-53888-unsplash.jpeg",
                 "images/quino-al-387923-unsplash.jpeg"
               ];
+
+              const imageTexts = [
+                "Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1Dies ist ein toller Text zu Bild1",
+                "Dies ist ein toller Text zu Bild2",
+                "Dies ist ein toller Text zu Bild3",
+                "Dies ist ein toller Text zu Bild4",
+              ]
 
               // Generate Image Panes
               var appendNode = document.querySelector("#ul");
@@ -54,7 +67,7 @@
       <img src="images/arrow-right.png" style="height: 150px; width: 150px; margin-top: -50%;" onclick="carousel.next()">
     </div>
     <div id="overlay">
-      <h2 id="overlayText">Test</h2>
+      <h2 id="overlay-text">Test</h2>
     </div>
     <link rel="stylesheet" href="css/carousel.css">
     <script src="js/hammer.min.js"></script>

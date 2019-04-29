@@ -229,6 +229,7 @@ function Carousel(element)
         })
 
         setContainerOffset(-(100/pane_count), false);
+        setImageText();
     };
 
 
@@ -270,6 +271,7 @@ function Carousel(element)
 
         var offset = -((100/pane_count) * (realIndex));
         setContainerOffset(offset, animate);
+        setImageText();
     };
 
 
@@ -281,6 +283,11 @@ function Carousel(element)
         }
         container.css("transform", "translate3d("+ percent +"%,0,0) scale3d(1,1,1)");
         //console.log("Offset applied");
+    }
+
+    function setImageText() {
+        var textElement = document.querySelector("#overlay-text");
+        textElement.innerHTML = imageTexts[current_pane-1];
     }
 
     this.next = function() {
